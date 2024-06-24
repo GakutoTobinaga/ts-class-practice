@@ -110,6 +110,15 @@ export class CarShop {
     deleteCar(id: string) : void {
         this.cars = this.cars.filter((car: Car) => car.id === id)
     }
+
+    findCarByName(name: string): Car | undefined {
+        // `find` メソッドを使って、指定された名前の車を検索する
+        return this.cars.find(car => car.name === name);
+    }
+
+    findCarByBrand(brand: string): Car[] | undefined {
+        return this.cars.filter((car) => car.brand === brand);
+    }
 }
 // ユーザーロールとその説明を定義
 type UserRoles = "admin" | "user" | "guest";
