@@ -1,69 +1,5 @@
-export class Book {
-    title: string;
-    author: string;
-    isbn: string;
-    isBorrowed: boolean = false;
-    constructor(title: string, author: string, isbn: string) {
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-    }
-    displayInfo(): string {
-        return `Title: ${this.title}, Author: ${this.author}, ISBN: ${this.isbn}, Borrowed: ${this.isBorrowed}`;
-    }
-    borrow(): void {
-        if (!this.isBorrowed){
-            this.isBorrowed = true;
-            console.log('${this.title} has been borrowed.')
-        } else {
-            console.log('${this.title} is already borrowed.')
-        }
-    }
-    return(): void {
-        if (this.isBorrowed){
-            this.isBorrowed = false;
-            console.log('${this.title} has been returned.')
-        } else {
-            console.log('${this.title} is not borrowed.')
-        }
-    }
-}
+import { makeShortUuid } from "./functions";
 
-export class Library {
-    private books: Book[] = [];
-
-    addBook(book: Book): void {
-        this.books.push(book);
-    }
-
-    removeBook(isbn: string): void {
-        this.books = this.books.filter((book: Book) => book.isbn !== isbn);
-    }
-
-    listBooks(): void {
-        this.books.forEach(book => {
-            console.log(book.displayInfo());
-        });
-    }
-
-    borrowBookByIsbn(isbn: string): void {
-        const book = this.books.find((book: Book) => book.isbn === isbn);
-        if (book) {
-            book.borrow();
-        } else {
-            console.log(`This code (${isbn}) is not subscripted`)
-        }
-    }
-
-    returnBookByIsbn(isbn:string) : void {
-        const book = this.books.find((book: Book) => book.isbn === isbn);
-        if (book) {
-            book.return();
-        } else {
-            console.log(`This code (${isbn}) is not subscripted`)
-        }
-    }
-}
 type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
 
@@ -93,6 +29,8 @@ export class CarShop {
     }
 
     addCar(car: Car) : void {
+        // const uuid: string = makeShortUuid()
+        // car.id = uuid
         this.cars.push(car)
         console.log(`${car.name} has been added successfully`)
     }
@@ -112,7 +50,6 @@ export class CarShop {
     }
 
     findCarByName(name: string): Car | undefined {
-        // `find` メソッドを使って、指定された名前の車を検索する
         return this.cars.find(car => car.name === name);
     }
 
