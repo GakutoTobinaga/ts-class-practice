@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Library = exports.Book = void 0;
+exports.CarShop = exports.Car = exports.Library = exports.Book = void 0;
 var Book = /** @class */ (function () {
     function Book(title, author, isbn) {
         this.isBorrowed = false;
@@ -53,7 +53,7 @@ var Library = /** @class */ (function () {
             book.borrow();
         }
         else {
-            console.log('This code (${isbn}) is not subscripted');
+            console.log("This code (".concat(isbn, ") is not subscripted"));
         }
     };
     Library.prototype.returnBookByIsbn = function (isbn) {
@@ -68,4 +68,66 @@ var Library = /** @class */ (function () {
     return Library;
 }());
 exports.Library = Library;
+var Car = /** @class */ (function () {
+    function Car(name, brand, type, id) {
+        this.name = name;
+        this.brand = brand;
+        this.type = type;
+        this.id = id;
+    }
+    return Car;
+}());
+exports.Car = Car;
+var CarShop = /** @class */ (function () {
+    function CarShop() {
+        this.cars = [];
+        this.carsF = [];
+    }
+    CarShop.prototype.listAllCars = function () {
+        this.cars.map(function (x) { return console.log(x); });
+        return this.cars.map(function (x) { return x; });
+    };
+    CarShop.prototype.listCarsF = function () {
+        this.carsF.map(function (x) { return console.log(x); });
+        return this.carsF.map(function (x) { return x; });
+    };
+    CarShop.prototype.addCar = function (car) {
+        this.cars.push(car);
+        console.log("".concat(car.name, " has been added successfully"));
+    };
+    CarShop.prototype.addCarF = function (car) {
+        this.carsF.push(car);
+        if (car.type === "FF" || car.type === "FR") {
+            this.carsF.push(car);
+        }
+        else {
+            throw new Error("This car is not a FF or FR car.");
+        }
+        console.log("".concat(car.name, " has been added successfully, also CarsF"));
+    };
+    CarShop.prototype.deleteCar = function (id) {
+        this.cars = this.cars.filter(function (car) { return car.id === id; });
+    };
+    return CarShop;
+}());
+exports.CarShop = CarShop;
+var roles = {
+    admin: "Administrator",
+    user: "Regular User",
+    guest: "Guest User",
+};
+console.log(roles.admin); // 出力: "Administrator"
+console.log(roles.user); // 出力: "Regular User"
+console.log(roles.guest); // 出力: "Guest User"
+var tobinagaInfos = {
+    Ryuichi: { age: 70, birthPlace: "Tokyo" },
+    Nae: { age: 68, birthPlace: "Osaka" },
+    Gakuto: { age: 30, birthPlace: "Kyoto" },
+    Eita: { age: 28, birthPlace: "Nagoya" },
+    Okome: { age: 25, birthPlace: "Sapporo" },
+};
+function getFirstElement(array) {
+    return array[0] ? array[0] : undefined;
+}
+var number1 = getFirstElement(["OK", "NG", "PAUSE"]);
 //# sourceMappingURL=class.js.map
