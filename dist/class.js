@@ -84,11 +84,9 @@ var CarShop = /** @class */ (function () {
         this.carsF = [];
     }
     CarShop.prototype.listAllCars = function () {
-        this.cars.map(function (x) { return console.log(x); });
         return this.cars.map(function (x) { return x; });
     };
     CarShop.prototype.listCarsF = function () {
-        this.carsF.map(function (x) { return console.log(x); });
         return this.carsF.map(function (x) { return x; });
     };
     CarShop.prototype.addCar = function (car) {
@@ -107,6 +105,26 @@ var CarShop = /** @class */ (function () {
     };
     CarShop.prototype.deleteCar = function (id) {
         this.cars = this.cars.filter(function (car) { return car.id === id; });
+    };
+    CarShop.prototype.findCarByName = function (name) {
+        // `find` メソッドを使って、指定された名前の車を検索する
+        return this.cars.find(function (car) { return car.name === name; });
+    };
+    CarShop.prototype.findCarByBrand = function (brand) {
+        return this.cars.filter(function (car) { return car.brand === brand; });
+    };
+    CarShop.prototype.updateCar = function (id, name, brand, type) {
+        if (!id) {
+            throw new Error("id isn't provided");
+        }
+        var car = this.cars.find(function (car) { return car.id === id; });
+        if (!car) {
+            throw new Error("Car has not been founded");
+        }
+        car.name = name;
+        car.brand = brand;
+        car.type = type;
+        return car;
     };
     return CarShop;
 }());
