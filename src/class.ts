@@ -120,7 +120,7 @@ export class CarShop {
         return this.cars.filter((car) => car.brand === brand);
     }
 
-    updateCar(id: string, name: string, brand: string, type: CarTypes) {
+    updateCar(id: string, name: string, brand: string, type: CarTypes): Car {
         if (!id) {
             throw new Error("id isn't provided")
         }
@@ -131,6 +131,7 @@ export class CarShop {
         car.name = name;
         car.brand = brand;
         car.type = type;
+        return car
     }
 }
 // ユーザーロールとその説明を定義

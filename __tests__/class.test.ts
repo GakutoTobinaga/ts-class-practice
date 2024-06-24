@@ -38,4 +38,10 @@ describe('CarShop', () => {
     expect(toyotaCars).toContain(car3);
     expect(toyotaCars).not.toContain(car1);
   })
+
+  it('should change car information', () => {
+    const updatedCar = carShop.updateCar("foiaejoiawf90", "Lancer EVO IX", "Mitsubishi", "4WD");
+    expect(updatedCar.name).not.toBe("Lancer EVO VIII")
+    expect(updatedCar.name).toBe("Lancer EVO IX")
+  })
 });
