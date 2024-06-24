@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES5",
+      "module": "commonjs",
+      "outDir": "./dist",           // コンパイル後のファイルを出力するディレクトリを指定
+      "strict": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "lib": ["ES2015","DOM"]
+    },
+    "include": ["./src/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
