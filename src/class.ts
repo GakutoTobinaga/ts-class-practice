@@ -84,12 +84,20 @@ export class CarShop {
     private cars: Car[] = []
     private carsF: Car[] = []
 
+    listAllCars(): Car[] {
+        return this.cars.map((x) => x)
+    }
+    
+    listCarsF(): Car[] {
+        return this.carsF.map((x) => x)
+    }
+
     addCar(car: Car) : void {
         this.cars.push(car)
         console.log(`${car.name} has been added successfully`)
     }
 
-    addCarF(car: Car) : void {
+    private addCarF(car: Car) : void {
         this.carsF.push(car)
         if (car.type === "FF" || car.type === "FR") {
             this.carsF.push(car)
