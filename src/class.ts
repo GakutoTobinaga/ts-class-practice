@@ -119,6 +119,20 @@ export class CarShop {
     findCarByBrand(brand: string): Car[] | undefined {
         return this.cars.filter((car) => car.brand === brand);
     }
+
+    updateCar(id: string, name: string, brand: string, type: CarTypes): Car {
+        if (!id) {
+            throw new Error("id isn't provided")
+        }
+        const car : Car | undefined = this.cars.find(car => car.id === id);
+        if (!car) {
+            throw new Error("Car has not been founded")
+        }
+        car.name = name;
+        car.brand = brand;
+        car.type = type;
+        return car
+    }
 }
 // ユーザーロールとその説明を定義
 type UserRoles = "admin" | "user" | "guest";
