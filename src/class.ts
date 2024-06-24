@@ -71,37 +71,3 @@ export class CarShop {
         return car
     }
 }
-// ユーザーロールとその説明を定義
-type UserRoles = "admin" | "user" | "guest";
-type UserRoleDescriptions = Record<UserRoles, string>;
-
-const roles: UserRoleDescriptions = {
-    admin: "Administrator",
-    user: "Regular User",
-    guest: "Guest User",
-};
-
-console.log(roles.admin); // 出力: "Administrator"
-console.log(roles.user); // 出力: "Regular User"
-console.log(roles.guest); // 出力: "Guest User"
-
-type Tobinaga = "Ryuichi" | "Nae" | "Gakuto" | "Eita" | "Okome"
-type Infos = {
-    age: number;
-    birthPlace: string;
-}
-type TobinagaClanInfos = Record<Tobinaga, Infos>
-
-const tobinagaInfos: TobinagaClanInfos = {
-    Ryuichi: { age: 70, birthPlace: "Tokyo" },
-    Nae: { age: 68, birthPlace: "Osaka" },
-    Gakuto: { age: 30, birthPlace: "Kyoto" },
-    Eita: { age: 28, birthPlace: "Nagoya" },
-    Okome: { age: 25, birthPlace: "Sapporo" },
-};
-
-function getFirstElement<T>(array: T[]): T | undefined{
-    return array[0] ? array[0] : undefined
-}
-
-const number1 = getFirstElement<string>(["OK", "NG", "PAUSE"])
