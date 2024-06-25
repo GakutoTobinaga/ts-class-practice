@@ -1,6 +1,4 @@
-import { makeShortUuid } from "./functions";
-
-type CarTypes = "4WD" | "FF" | "FR" | "MR";
+export type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
 
 export class Car {
