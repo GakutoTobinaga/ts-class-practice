@@ -1,6 +1,7 @@
+import { initializeDatabase } from "./db.js";
 export type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
-
+import { Data } from "./db.js";
 export class Car {
     name: string;
     brand: string;
@@ -15,18 +16,28 @@ export class Car {
 }
 
 export class CarShop {
+    private db = initializeDatabase();
     private cars: Car[] = []
     private carsF: Car[] = []
 
-    listAllCars(): Car[] {
-        return this.cars.map((x) => x)
+    async listAllCars() : Promise<Car[]>{
+        await this.db.read();
+        this.db.data ||= { cars: [] };
+        // { cars } の型は Car[] が指定できないが、なぜreturnは Car[] で通るのか？
+        const { cars } = this.db.data;
+        // const first = cars[0]
+        // const firstCarName = first.name
+        // console.log(cars[0])
+        return cars
     }
     
     listCarsF(): Car[] {
         return this.carsF.map((x) => x)
     }
 
-    addCar(car: Car) : void {
+    async addCar(car: Car) : Promise<void> {
+        await this.db.read();
+        this.db.data ||= { cars: [] };
         // const uuid: string = makeShortUuid()
         // car.id = uuid
         this.cars.push(car)

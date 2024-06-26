@@ -1,3 +1,4 @@
+import { initializeDatabase } from "./db.js";
 export class Car {
     constructor(name, brand, type, id) {
         this.name = name;
@@ -8,16 +9,28 @@ export class Car {
 }
 export class CarShop {
     constructor() {
+        this.db = initializeDatabase();
         this.cars = [];
         this.carsF = [];
     }
-    listAllCars() {
-        return this.cars.map((x) => x);
+    async listAllCars() {
+        var _a;
+        await this.db.read();
+        (_a = this.db).data || (_a.data = { cars: [] });
+        // { cars } の型は Car[] が指定できないが、なぜreturnは Car[] で通るのか？
+        const { cars } = this.db.data;
+        // const first = cars[0]
+        // const firstCarName = first.name
+        // console.log(cars[0])
+        return cars;
     }
     listCarsF() {
         return this.carsF.map((x) => x);
     }
-    addCar(car) {
+    async addCar(car) {
+        var _a;
+        await this.db.read();
+        (_a = this.db).data || (_a.data = { cars: [] });
         // const uuid: string = makeShortUuid()
         // car.id = uuid
         this.cars.push(car);
