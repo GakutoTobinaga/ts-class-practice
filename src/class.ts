@@ -2,6 +2,10 @@ import { initializeDatabase } from "./db.js";
 export type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
 import { Data } from "./db.js";
+
+/**
+ * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
+ */
 export class Car {
     name: string;
     brand: string;
@@ -33,7 +37,11 @@ export class CarShop {
     listCarsF(): Car[] {
         return this.carsF.map((x) => x)
     }
-
+    /**
+     * 
+     * @param car car information
+     * @returns error message
+     */
     async addCar(car: Car) : Promise<string> {
         try {
             await this.db.read();
@@ -70,6 +78,11 @@ export class CarShop {
 
     deleteCar(id: string) : void {
         this.cars = this.cars.filter((car: Car) => car.id === id)
+        try {
+            this.db.data.cars.filter((car: Car) => car.id == id)
+        } catch (error) {
+            throw new Error(`deleteCar is failed.`)
+        }
     }
 
     findCarByName(name: string): Car | undefined {
