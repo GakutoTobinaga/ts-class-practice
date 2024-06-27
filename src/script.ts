@@ -5,7 +5,7 @@ import { Car, CarShop } from "./class.js";
 const carShop = new CarShop()
 
 const allCars : Car[] = await carShop.listAllCars()
-console.log(allCars, "CARSHOP script")
+console.log(allCars)
 // carShop.addCar(car)
 // carShop.addCar(car2)
 // const carlist = carShop.listAllCars()
