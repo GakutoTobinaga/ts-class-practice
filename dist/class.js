@@ -12,16 +12,13 @@ export class CarShop {
         this.db = initializeDatabase();
         this.cars = [];
         this.carsF = [];
+        this.db = initializeDatabase();
     }
     async listAllCars() {
         var _a;
         await this.db.read();
         (_a = this.db).data || (_a.data = { cars: [] });
-        // { cars } の型は Car[] が指定できないが、なぜreturnは Car[] で通るのか？
-        const { cars } = this.db.data;
-        // const first = cars[0]
-        // const firstCarName = first.name
-        // console.log(cars[0])
+        const cars = this.db.data.cars;
         return cars;
     }
     listCarsF() {
@@ -29,23 +26,39 @@ export class CarShop {
     }
     async addCar(car) {
         var _a;
-        await this.db.read();
-        (_a = this.db).data || (_a.data = { cars: [] });
-        // const uuid: string = makeShortUuid()
-        // car.id = uuid
-        this.cars.push(car);
-        console.log(`${car.name} has been added successfully`);
-    }
-    addCarF(car) {
-        this.carsF.push(car);
-        if (car.type === "FF" || car.type === "FR") {
-            this.carsF.push(car);
+        try {
+            await this.db.read();
+            (_a = this.db).data || (_a.data = { cars: [] });
+            if (!car.name || !car.brand || !car.type || !car.id) {
+                throw new Error(`Invalid car data`);
+            }
+            this.db.data.cars.push(car);
+            await this.db.write();
+            const message = `addCar() has been succeeded.`;
+            return message;
         }
-        else {
-            throw new Error("This car is not a FF or FR car.");
+        catch (error) {
+            // エラーが標準のErrorオブジェクトであるか確認
+            if (error instanceof Error) {
+                console.error('Error message:', error.message); // 安全にエラーメッセージにアクセス
+                console.error('Stack trace:', error.stack); // スタックトレースにアクセス
+            }
+            else {
+                // エラーが標準のErrorオブジェクトでない場合
+                console.error('Unexpected error:', error);
+            }
+            throw error; // エラーを再スローする
         }
-        console.log(`${car.name} has been added successfully, also CarsF`);
     }
+    // private addCarF(car: Car) : void {
+    //     this.carsF.push(car)
+    //     if (car.type === "FF" || car.type === "FR") {
+    //         this.carsF.push(car)
+    //     } else {
+    //         throw new Error("This car is not a FF or FR car.")
+    //     }
+    //     console.log(`${car.name} has been added successfully, also CarsF`)
+    // }
     deleteCar(id) {
         this.cars = this.cars.filter((car) => car.id === id);
     }

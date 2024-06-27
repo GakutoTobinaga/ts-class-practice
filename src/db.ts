@@ -4,7 +4,7 @@ import { Car, CarShop } from './class.js';
 import short from 'short-uuid';
 
 const translator = short();
-function makeShortUuid(): string{
+export function makeShortUuid(): string{
   const uuid: string = translator.new();
   return uuid
 }

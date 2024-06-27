@@ -2,7 +2,7 @@ import { Low } from 'lowdb';
 import { JSONFile } from "lowdb/node";
 import short from 'short-uuid';
 const translator = short();
-function makeShortUuid() {
+export function makeShortUuid() {
     const uuid = translator.new();
     return uuid;
 }
