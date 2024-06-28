@@ -20,16 +20,14 @@ export class Car {
 
 export class CarShop {
 
-    private db = initializeDatabase();
+    // private db = initializeDatabase();
     private cars: Car[] = []
     private carsF: Car[] = []
     constructor() {
-        this.db = initializeDatabase();
+        // this.db = initializeDatabase();
     }
     async listAllCars() : Promise<Car[]>{
-        await this.db.read();
-        this.db.data ||= { cars: [] };
-        const cars : Car[] = this.db.data.cars;
+        const cars : Car[] = this.cars.map((car) => car)
         return cars
     }
     
@@ -43,13 +41,13 @@ export class CarShop {
      */
     async addCar(car: Car) : Promise<string> {
         try {
-            await this.db.read();
-            this.db.data ||= { cars: [] };
+            // await this.db.read();
+            // this.db.data ||= { cars: [] };
             if (!car.name || !car.brand || !car.type || !car.id) {
                 throw new Error(`Invalid car data`)
             }
-            this.db.data.cars.push(car)
-            await this.db.write();
+            this.cars.push(car)
+            // await this.db.write();
             const message: string = `addCar() has been succeeded.`
             return message
         } catch (error){

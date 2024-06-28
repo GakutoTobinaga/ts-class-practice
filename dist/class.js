@@ -1,4 +1,7 @@
 import { initializeDatabase } from "./db.js";
+/**
+ * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
+ */
 export class Car {
     constructor(name, brand, type, id) {
         this.name = name;
@@ -24,6 +27,11 @@ export class CarShop {
     listCarsF() {
         return this.carsF.map((x) => x);
     }
+    /**
+     *
+     * @param car car information
+     * @returns error message
+     */
     async addCar(car) {
         var _a;
         try {
@@ -61,6 +69,12 @@ export class CarShop {
     // }
     deleteCar(id) {
         this.cars = this.cars.filter((car) => car.id === id);
+        try {
+            this.db.data.cars.filter((car) => car.id == id);
+        }
+        catch (error) {
+            throw new Error(`deleteCar is failed.`);
+        }
     }
     findCarByName(name) {
         return this.cars.find(car => car.name === name);

@@ -14,7 +14,7 @@ describe('CarShop', () => {
   it('should add a car', () => {
     const car = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "test-id");
     carShop.addCar(car);
-    expect(carShop.listAllCars).toContain(car);
+    expect(carShop.listAllCars()).toContain(car);
   });
 
   it('should list all cars', () => {
