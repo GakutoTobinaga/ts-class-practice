@@ -1,10 +1,19 @@
-import { Car, CarShop } from "./class";
-
-const car = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "foiaejoiawf90")
-const car2 = new Car("MR2", "Toyota", "MR", "fjf038fj08")
+import { Car, CarShop } from "./class.js";
+import { makeShortUuid } from "./db.js";
+const car1 = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", makeShortUuid())
+const car2 = new Car("MR2", "Toyota", "MR", makeShortUuid())
 const carShop = new CarShop()
 
-carShop.addCar(car)
-carShop.addCar(car2)
-const carlist = carShop.listAllCars()
-console.log(carlist)
+
+// await carShop.addCar(car2)
+// carShop.deleteCar('7rtzDbqcayMkSyfvyjX3VQ');
+await carShop.updateCar("gufw13YRWKDS7VBh5QFmKi", "Nissan", "GT-R34", "FR");
+// const allCars : Car[] = await carShop.listAllCars()
+// console.log(allCars)
+// await carShop.addCar(car2)
+const allCars = await carShop.listAllCars()
+console.log(allCars)
+// carShop.addCar(car)
+// carShop.addCar(car2)
+// const carlist = carShop.listAllCars()
+// console.log(carlist)

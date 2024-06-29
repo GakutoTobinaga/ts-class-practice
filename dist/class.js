@@ -1,151 +1,109 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CarShop = exports.Car = exports.Library = exports.Book = void 0;
-var Book = /** @class */ (function () {
-    function Book(title, author, isbn) {
-        this.isBorrowed = false;
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-    }
-    Book.prototype.displayInfo = function () {
-        return "Title: ".concat(this.title, ", Author: ").concat(this.author, ", ISBN: ").concat(this.isbn, ", Borrowed: ").concat(this.isBorrowed);
-    };
-    Book.prototype.borrow = function () {
-        if (!this.isBorrowed) {
-            this.isBorrowed = true;
-            console.log('${this.title} has been borrowed.');
-        }
-        else {
-            console.log('${this.title} is already borrowed.');
-        }
-    };
-    Book.prototype.return = function () {
-        if (this.isBorrowed) {
-            this.isBorrowed = false;
-            console.log('${this.title} has been returned.');
-        }
-        else {
-            console.log('${this.title} is not borrowed.');
-        }
-    };
-    return Book;
-}());
-exports.Book = Book;
-var Library = /** @class */ (function () {
-    function Library() {
-        this.books = [];
-    }
-    Library.prototype.addBook = function (book) {
-        this.books.push(book);
-    };
-    Library.prototype.removeBook = function (isbn) {
-        this.books = this.books.filter(function (book) { return book.isbn !== isbn; });
-    };
-    Library.prototype.listBooks = function () {
-        this.books.forEach(function (book) {
-            console.log(book.displayInfo());
-        });
-    };
-    Library.prototype.borrowBookByIsbn = function (isbn) {
-        var book = this.books.find(function (book) { return book.isbn === isbn; });
-        if (book) {
-            book.borrow();
-        }
-        else {
-            console.log("This code (".concat(isbn, ") is not subscripted"));
-        }
-    };
-    Library.prototype.returnBookByIsbn = function (isbn) {
-        var book = this.books.find(function (book) { return book.isbn === isbn; });
-        if (book) {
-            book.return();
-        }
-        else {
-            console.log("This code (".concat(isbn, ") is not subscripted"));
-        }
-    };
-    return Library;
-}());
-exports.Library = Library;
-var Car = /** @class */ (function () {
-    function Car(name, brand, type, id) {
+import { initializeDatabase } from "./db.js";
+/**
+ * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
+ */
+export class Car {
+    constructor(name, brand, type, id) {
         this.name = name;
         this.brand = brand;
         this.type = type;
         this.id = id;
     }
-    return Car;
-}());
-exports.Car = Car;
-var CarShop = /** @class */ (function () {
-    function CarShop() {
+}
+export class CarShop {
+    constructor() {
+        this.db = initializeDatabase();
         this.cars = [];
         this.carsF = [];
+        this.db = initializeDatabase();
     }
-    CarShop.prototype.listAllCars = function () {
-        return this.cars.map(function (x) { return x; });
-    };
-    CarShop.prototype.listCarsF = function () {
-        return this.carsF.map(function (x) { return x; });
-    };
-    CarShop.prototype.addCar = function (car) {
-        this.cars.push(car);
-        console.log("".concat(car.name, " has been added successfully"));
-    };
-    CarShop.prototype.addCarF = function (car) {
-        this.carsF.push(car);
-        if (car.type === "FF" || car.type === "FR") {
-            this.carsF.push(car);
+    async listAllCars() {
+        var _a;
+        await this.db.read();
+        (_a = this.db).data || (_a.data = { cars: [] });
+        const cars = this.db.data.cars;
+        return cars;
+    }
+    listCarsF() {
+        return this.carsF.map((x) => x);
+    }
+    /**
+     *
+     * @param car car information
+     * @returns error message
+     */
+    async addCar(car) {
+        var _a;
+        try {
+            await this.db.read();
+            (_a = this.db).data || (_a.data = { cars: [] });
+            if (!car.name || !car.brand || !car.type || !car.id) {
+                throw new Error(`Invalid car data`);
+            }
+            this.db.data.cars.push(car);
+            await this.db.write();
+            const message = `addCar() has been succeeded.`;
+            return message;
         }
-        else {
-            throw new Error("This car is not a FF or FR car.");
+        catch (error) {
+            // エラーが標準のErrorオブジェクトであるか確認
+            if (error instanceof Error) {
+                console.error('Error message:', error.message); // 安全にエラーメッセージにアクセス
+                console.error('Stack trace:', error.stack); // スタックトレースにアクセス
+            }
+            else {
+                // エラーが標準のErrorオブジェクトでない場合
+                console.error('Unexpected error:', error);
+            }
+            throw error; // エラーを再スローする
         }
-        console.log("".concat(car.name, " has been added successfully, also CarsF"));
-    };
-    CarShop.prototype.deleteCar = function (id) {
-        this.cars = this.cars.filter(function (car) { return car.id === id; });
-    };
-    CarShop.prototype.findCarByName = function (name) {
-        // `find` メソッドを使って、指定された名前の車を検索する
-        return this.cars.find(function (car) { return car.name === name; });
-    };
-    CarShop.prototype.findCarByBrand = function (brand) {
-        return this.cars.filter(function (car) { return car.brand === brand; });
-    };
-    CarShop.prototype.updateCar = function (id, name, brand, type) {
+    }
+    // private addCarF(car: Car) : void {
+    //     this.carsF.push(car)
+    //     if (car.type === "FF" || car.type === "FR") {
+    //         this.carsF.push(car)
+    //     } else {
+    //         throw new Error("This car is not a FF or FR car.")
+    //     }
+    //     console.log(`${car.name} has been added successfully, also CarsF`)
+    // }
+    async deleteCar(id) {
+        try {
+            const filteredCars = this.db.data.cars.filter((car) => car.id !== id);
+            this.db.data.cars = filteredCars;
+            await this.db.write();
+        }
+        catch (error) {
+            throw new Error(`deleteCar is failed.`);
+        }
+        finally {
+        }
+    }
+    findCarByName(name) {
+        return this.cars.find(car => car.name === name);
+    }
+    findCarByBrand(brand) {
+        return this.cars.filter((car) => car.brand === brand);
+    }
+    async updateCar(id, name, brand, type) {
         if (!id) {
             throw new Error("id isn't provided");
         }
-        var car = this.cars.find(function (car) { return car.id === id; });
-        if (!car) {
-            throw new Error("Car has not been founded");
+        try {
+            await this.db.read();
+            const car = this.db.data.cars.find(car => car.id === id);
+            if (!car) {
+                throw new Error("Car has not been founded");
+            }
+            car.name = name;
+            car.brand = brand;
+            car.type = type;
+            await this.db.write();
+            return car;
         }
-        car.name = name;
-        car.brand = brand;
-        car.type = type;
-        return car;
-    };
-    return CarShop;
-}());
-exports.CarShop = CarShop;
-var roles = {
-    admin: "Administrator",
-    user: "Regular User",
-    guest: "Guest User",
-};
-console.log(roles.admin); // 出力: "Administrator"
-console.log(roles.user); // 出力: "Regular User"
-console.log(roles.guest); // 出力: "Guest User"
-var tobinagaInfos = {
-    Ryuichi: { age: 70, birthPlace: "Tokyo" },
-    Nae: { age: 68, birthPlace: "Osaka" },
-    Gakuto: { age: 30, birthPlace: "Kyoto" },
-    Eita: { age: 28, birthPlace: "Nagoya" },
-    Okome: { age: 25, birthPlace: "Sapporo" },
-};
-function getFirstElement(array) {
-    return array[0] ? array[0] : undefined;
+        catch (error) {
+            throw new Error("update has been failed");
+        }
+    }
 }
-var number1 = getFirstElement(["OK", "NG", "PAUSE"]);
 //# sourceMappingURL=class.js.map

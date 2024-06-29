@@ -1,8 +1,7 @@
-import { Car, CarShop } from '../src/class';
-
+import { Car, CarShop } from "../src/class";
 describe('CarShop', () => {
   let carShop: CarShop;
-  const car1 = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "foiaejoiawf90");
+  const car1 = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "test-id");
   const car2 = new Car("MR2", "Toyota", "MR", "fjf038fj08");
   const car3 = new Car("86", "Toyota", "FR", "o234ufh948f");
   beforeEach(() => {
@@ -12,14 +11,14 @@ describe('CarShop', () => {
     carShop.addCar(car3);
   });
 
-  it('should add a car', () => {
-    const car = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "foiaejoiawf90");
-    carShop.addCar(car);
-    expect(carShop.listAllCars()).toContain(car);
+  it('should add a car', async() => {
+    const car = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "test-id");
+    await carShop.addCar(car);
+    expect(carShop.listAllCars).toContain(car);
   });
 
-  it('should list all cars', () => {
-    const allCars = carShop.listAllCars();
+  it('should list all cars', async() => {
+    const allCars = await carShop.listAllCars();
     expect(allCars).toHaveLength(3);
     expect(allCars).toContain(car1);
     expect(allCars).toContain(car2);
@@ -40,7 +39,7 @@ describe('CarShop', () => {
   })
 
   it('should change car information', () => {
-    const updatedCar = carShop.updateCar("foiaejoiawf90", "Lancer EVO IX", "Mitsubishi", "4WD");
+    const updatedCar = carShop.updateCar("test-id", "Lancer EVO IX", "Mitsubishi", "4WD");
     expect(updatedCar.name).not.toBe("Lancer EVO VIII")
     expect(updatedCar.name).toBe("Lancer EVO IX")
   })
