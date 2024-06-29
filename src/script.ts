@@ -7,7 +7,7 @@ const carShop = new CarShop()
 
 // await carShop.addCar(car2)
 // carShop.deleteCar('7rtzDbqcayMkSyfvyjX3VQ');
-await carShop.updateCar("gufw13YRWKDS7VBh5QFmKi", "Nissan", "GT-R33", "FR");
+await carShop.updateCar("gufw13YRWKDS7VBh5QFmKi", "Nissan", "GT-R34", "FR");
 // const allCars : Car[] = await carShop.listAllCars()
 // console.log(allCars)
 // await carShop.addCar(car2)

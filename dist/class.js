@@ -89,16 +89,21 @@ export class CarShop {
         if (!id) {
             throw new Error("id isn't provided");
         }
-        await this.db.read();
-        const car = this.db.data.cars.find(car => car.id === id);
-        if (!car) {
-            throw new Error("Car has not been founded");
+        try {
+            await this.db.read();
+            const car = this.db.data.cars.find(car => car.id === id);
+            if (!car) {
+                throw new Error("Car has not been founded");
+            }
+            car.name = name;
+            car.brand = brand;
+            car.type = type;
+            await this.db.write();
+            return car;
         }
-        car.name = name;
-        car.brand = brand;
-        car.type = type;
-        await this.db.write();
-        return car;
+        catch (error) {
+            throw new Error("update has been failed");
+        }
     }
 }
 //# sourceMappingURL=class.js.map
