@@ -94,6 +94,11 @@ export class CarShop {
         return this.cars.filter((car) => car.brand === brand);
     }
 
+    async findCarsByType(type: CarTypes): Promise<Car[]> {
+        await this.db.read();
+        const cars : Car[] = this.db.data.cars.filter((car) => car.type === type);
+        return cars
+    }
     async updateCar(id: string, name: string, brand: string, type: CarTypes): Promise<Car> {
         if (!id) {
             throw new Error("id isn't provided")
