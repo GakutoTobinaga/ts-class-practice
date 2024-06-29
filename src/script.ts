@@ -5,9 +5,13 @@ const car2 = new Car("MR2", "Toyota", "MR", makeShortUuid())
 const carShop = new CarShop()
 
 
-await carShop.addCar(car1)
-await carShop.addCar(car2)
-const allCars : Car[] = await carShop.listAllCars()
+// await carShop.addCar(car2)
+// carShop.deleteCar('7rtzDbqcayMkSyfvyjX3VQ');
+await carShop.updateCar("gufw13YRWKDS7VBh5QFmKi", "Nissan", "GT-R33", "FR");
+// const allCars : Car[] = await carShop.listAllCars()
+// console.log(allCars)
+// await carShop.addCar(car2)
+const allCars = await carShop.listAllCars()
 console.log(allCars)
 // carShop.addCar(car)
 // carShop.addCar(car2)

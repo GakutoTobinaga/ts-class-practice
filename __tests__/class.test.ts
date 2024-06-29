@@ -11,14 +11,14 @@ describe('CarShop', () => {
     carShop.addCar(car3);
   });
 
-  it('should add a car', () => {
+  it('should add a car', async() => {
     const car = new Car("Lancer EVO VIII", "Mitsubishi", "4WD", "test-id");
-    carShop.addCar(car);
+    await carShop.addCar(car);
     expect(carShop.listAllCars).toContain(car);
   });
 
-  it('should list all cars', () => {
-    const allCars = carShop.listAllCars();
+  it('should list all cars', async() => {
+    const allCars = await carShop.listAllCars();
     expect(allCars).toHaveLength(3);
     expect(allCars).toContain(car1);
     expect(allCars).toContain(car2);

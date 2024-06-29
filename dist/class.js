@@ -67,13 +67,16 @@ export class CarShop {
     //     }
     //     console.log(`${car.name} has been added successfully, also CarsF`)
     // }
-    deleteCar(id) {
-        this.cars = this.cars.filter((car) => car.id === id);
+    async deleteCar(id) {
         try {
-            this.db.data.cars.filter((car) => car.id == id);
+            const filteredCars = this.db.data.cars.filter((car) => car.id !== id);
+            this.db.data.cars = filteredCars;
+            await this.db.write();
         }
         catch (error) {
             throw new Error(`deleteCar is failed.`);
+        }
+        finally {
         }
     }
     findCarByName(name) {
@@ -82,17 +85,19 @@ export class CarShop {
     findCarByBrand(brand) {
         return this.cars.filter((car) => car.brand === brand);
     }
-    updateCar(id, name, brand, type) {
+    async updateCar(id, name, brand, type) {
         if (!id) {
             throw new Error("id isn't provided");
         }
-        const car = this.cars.find(car => car.id === id);
+        await this.db.read();
+        const car = this.db.data.cars.find(car => car.id === id);
         if (!car) {
             throw new Error("Car has not been founded");
         }
         car.name = name;
         car.brand = brand;
         car.type = type;
+        await this.db.write();
         return car;
     }
 }

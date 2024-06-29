@@ -75,12 +75,14 @@ export class CarShop {
     //     console.log(`${car.name} has been added successfully, also CarsF`)
     // }
 
-    deleteCar(id: string) : void {
-        this.cars = this.cars.filter((car: Car) => car.id === id)
+    async deleteCar(id: string) : Promise<void> {
         try {
-            this.db.data.cars.filter((car: Car) => car.id == id)
+            const filteredCars = this.db.data.cars.filter((car: Car) => car.id !== id);
+            this.db.data.cars = filteredCars;
+            await this.db.write();
         } catch (error) {
             throw new Error(`deleteCar is failed.`)
+        } finally {
         }
     }
 
@@ -92,17 +94,19 @@ export class CarShop {
         return this.cars.filter((car) => car.brand === brand);
     }
 
-    updateCar(id: string, name: string, brand: string, type: CarTypes): Car {
+    async updateCar(id: string, name: string, brand: string, type: CarTypes): Promise<Car> {
         if (!id) {
             throw new Error("id isn't provided")
         }
-        const car : Car | undefined = this.cars.find(car => car.id === id);
+        await this.db.read();
+        const car : Car | undefined = this.db.data.cars.find(car => car.id === id);
         if (!car) {
             throw new Error("Car has not been founded")
         }
         car.name = name;
         car.brand = brand;
         car.type = type;
+        await this.db.write();
         return car
     }
 }
