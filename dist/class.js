@@ -1,4 +1,5 @@
-import { initializeDatabase } from "./db.js";
+import { Low } from "lowdb";
+import { JSONFile } from "lowdb/node";
 /**
  * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
  */
@@ -9,6 +10,14 @@ export class Car {
         this.type = type;
         this.id = id;
     }
+}
+// Read or create db.json
+export function initializeDatabase() {
+    const adapter = new JSONFile('db.json');
+    const db = new Low(adapter, { cars: [] });
+    // const car = new CarShop()
+    // 返したdbのメソッドを使う
+    return db;
 }
 export class CarShop {
     constructor() {
@@ -21,8 +30,7 @@ export class CarShop {
         var _a;
         await this.db.read();
         (_a = this.db).data || (_a.data = { cars: [] });
-        const cars = this.db.data.cars;
-        return cars;
+        return this.db.data.cars;
     }
     listCarsF() {
         return this.carsF.map((x) => x);
@@ -42,17 +50,39 @@ export class CarShop {
             }
             this.db.data.cars.push(car);
             await this.db.write();
-            const message = `addCar() has been succeeded.`;
+            const message = `${car.name} has been added successfully.`;
             return message;
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                console.error('Error message:', error.message);
+                console.error('Stack trace:', error.stack);
+            }
+            else {
+                console.error('Unexpected error:', error);
+            }
+            throw error;
+        }
+    }
+    async addCars(cars) {
+        var _a;
+        try {
+            await this.db.read();
+            (_a = this.db).data || (_a.data = { cars: [] });
+            const messages = [];
+            for (const car of cars) {
+                const message = await this.addCar(car);
+                messages.push(message);
+            }
+            return messages;
         }
         catch (error) {
             // エラーが標準のErrorオブジェクトであるか確認
             if (error instanceof Error) {
-                console.error('Error message:', error.message); // 安全にエラーメッセージにアクセス
-                console.error('Stack trace:', error.stack); // スタックトレースにアクセス
+                console.error('Error message:', error.message);
+                console.error('Stack trace:', error.stack);
             }
             else {
-                // エラーが標準のErrorオブジェクトでない場合
                 console.error('Unexpected error:', error);
             }
             throw error; // エラーを再スローする

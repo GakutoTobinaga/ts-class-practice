@@ -1,4 +1,5 @@
-import { Data, initializeDatabase } from "./db.js";
+import { Low } from "lowdb";
+import { JSONFile } from "lowdb/node";
 export type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
 
@@ -17,10 +18,22 @@ export class Car {
         this.id = id;
     }
 }
-
+export type Data = {
+    cars: Car[];
+  };
+  
+  // Read or create db.json
+  
+  export function initializeDatabase() {
+    const adapter = new JSONFile<Data>('db.json');
+    const db = new Low<Data>(adapter, { cars: [] });
+    // const car = new CarShop()
+    // 返したdbのメソッドを使う
+    return db
+  }
 export class CarShop {
 
-    private db = initializeDatabase();
+    private db : Low<Data> = initializeDatabase();
     private cars: Car[] = []
     private carsF: Car[] = []
     constructor() {
@@ -29,8 +42,7 @@ export class CarShop {
     async listAllCars() : Promise<Car[]>{
         await this.db.read();
         this.db.data ||= { cars: [] };
-        const cars : Car[] = this.db.data.cars;
-        return cars
+        return this.db.data.cars;
     }
     
     listCarsF(): Car[] {
@@ -50,21 +62,39 @@ export class CarShop {
             }
             this.db.data.cars.push(car)
             await this.db.write();
-            const message: string = `addCar() has been succeeded.`
+            const message: string = `${car.name} has been added successfully.`
             return message
+        } catch (error){
+            if (error instanceof Error) {
+                console.error('Error message:', error.message);
+                console.error('Stack trace:', error.stack);
+            } else {
+                console.error('Unexpected error:', error);
+            }
+            throw error;
+        }
+    }
+    async addCars(cars: Car[]): Promise<void | string[]> {
+        try {
+            await this.db.read();
+            this.db.data ||= { cars: [] };
+            const messages: string[] = [];
+            for (const car of cars) {
+                const message = await this.addCar(car);
+                messages.push(message);
+            }
+            return messages
         } catch (error){
                     // エラーが標準のErrorオブジェクトであるか確認
             if (error instanceof Error) {
-                console.error('Error message:', error.message); // 安全にエラーメッセージにアクセス
-                console.error('Stack trace:', error.stack); // スタックトレースにアクセス
+                console.error('Error message:', error.message);
+                console.error('Stack trace:', error.stack);
             } else {
-                // エラーが標準のErrorオブジェクトでない場合
                 console.error('Unexpected error:', error);
             }
             throw error; // エラーを再スローする
         }
     }
-
     // private addCarF(car: Car) : void {
     //     this.carsF.push(car)
     //     if (car.type === "FF" || car.type === "FR") {
