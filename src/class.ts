@@ -95,18 +95,13 @@ export class CarShop {
             throw error; // エラーを再スローする
         }
     }
-    // private addCarF(car: Car) : void {
-    //     this.carsF.push(car)
-    //     if (car.type === "FF" || car.type === "FR") {
-    //         this.carsF.push(car)
-    //     } else {
-    //         throw new Error("This car is not a FF or FR car.")
-    //     }
-    //     console.log(`${car.name} has been added successfully, also CarsF`)
-    // }
 
-    async deleteCar(id: string) : Promise<void> {
+    async deleteCar(id: string) : Promise<Car | undefined> {
         try {
+            const car : Car | undefined = await this.findCarById(id);
+            if (!car) {
+                return undefined;
+            }
             const filteredCars = this.db.data.cars.filter((car: Car) => car.id !== id);
             this.db.data.cars = filteredCars;
             await this.db.write();
@@ -115,7 +110,16 @@ export class CarShop {
         } finally {
         }
     }
-
+    async findCarById(id: string): Promise<Car | undefined> {
+        try {
+            await this.db.read();
+            this.db.data ||= { cars: [] };
+            const car : Car  | undefined = await this.db.data.cars.find(car => car.id === id);
+            return car
+        } catch (err) {
+            throw new Error("Problem has occurred.")
+        }
+    }
     findCarByName(name: string): Car | undefined {
         return this.cars.find(car => car.name === name);
     }
