@@ -1,14 +1,16 @@
 import { Low } from "lowdb";
 import { JSONFile } from "lowdb/node";
 /**
- * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
+ * @Car
+ * Car have 4 infos, id will be added as an uuid in ../script.ts
  */
 export class Car {
-    constructor(name, brand, type, id) {
+    constructor(name, brand, type, id, quantity = 0) {
         this.name = name;
         this.brand = brand;
         this.type = type;
         this.id = id;
+        this.quantity = quantity;
     }
 }
 // Read or create db.json
@@ -50,7 +52,7 @@ export class CarShop {
             }
             this.db.data.cars.push(car);
             await this.db.write();
-            const message = `${car.name} has been added successfully.`;
+            const message = `${car.name} has been added successfully., ${car.quantity}`;
             return message;
         }
         catch (error) {
@@ -127,7 +129,7 @@ export class CarShop {
         const cars = this.db.data.cars.filter((car) => car.type === type);
         return cars;
     }
-    async updateCar(id, name, brand, type) {
+    async updateCar(id, carWithoutId) {
         if (!id) {
             throw new Error("id isn't provided");
         }
@@ -137,11 +139,12 @@ export class CarShop {
             if (!car) {
                 throw new Error("Car has not been founded");
             }
-            car.name = name;
-            car.brand = brand;
-            car.type = type;
+            car.name = carWithoutId.name;
+            car.brand = carWithoutId.brand;
+            car.type = carWithoutId.type;
+            car.quantity = carWithoutId.quantity;
             await this.db.write();
-            return car;
+            console.log("update has been succeeded");
         }
         catch (error) {
             throw new Error("update has been failed");

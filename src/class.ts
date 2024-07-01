@@ -4,27 +4,32 @@ export type CarTypes = "4WD" | "FF" | "FR" | "MR";
 type CarTypesF = Exclude<CarTypes, "4WD" | "MR">
 
 /**
- * @Car Car have 4 infos, id will be added as an uuid in ../script.ts
+ * @Car
+ * Car have 4 infos, id will be added as an uuid in ../script.ts
  */
 export class Car {
     name: string;
     brand: string;
-    type: string;
+    type: CarTypes | CarTypesF;
     id: string;
-    constructor(name: string, brand: string, type: CarTypes | CarTypesF, id: string){
+    quantity?: number;
+    constructor(name: string, brand: string, type: CarTypes | CarTypesF, id: string, quantity: number = 0,){
         this.name = name;
         this.brand = brand;
         this.type = type;
         this.id = id;
+        this.quantity = quantity;
     }
 }
+export type CarWithoutId = Omit<Car, "id">
+
 export type Data = {
     cars: Car[];
   };
   
   // Read or create db.json
   
-  export function initializeDatabase() {
+export function initializeDatabase() {
     const adapter = new JSONFile<Data>('db.json');
     const db = new Low<Data>(adapter, { cars: [] });
     // const car = new CarShop()
@@ -62,7 +67,7 @@ export class CarShop {
             }
             this.db.data.cars.push(car)
             await this.db.write();
-            const message: string = `${car.name} has been added successfully.`
+            const message: string = `${car.name} has been added successfully., ${car.quantity}`
             return message
         } catch (error){
             if (error instanceof Error) {
@@ -133,7 +138,7 @@ export class CarShop {
         const cars : Car[] = this.db.data.cars.filter((car) => car.type === type);
         return cars
     }
-    async updateCar(id: string, name: string, brand: string, type: CarTypes): Promise<Car> {
+    async updateCar(id: string , carWithoutId: CarWithoutId): Promise<void> {
         if (!id) {
             throw new Error("id isn't provided")
         }
@@ -143,11 +148,12 @@ export class CarShop {
             if (!car) {
                 throw new Error("Car has not been founded")
             }
-            car.name = name;
-            car.brand = brand;
-            car.type = type;
+            car.name = carWithoutId.name;
+            car.brand = carWithoutId.brand;
+            car.type = carWithoutId.type;
+            car.quantity = carWithoutId.quantity;
             await this.db.write();
-            return car
+            console.log("update has been succeeded")
         } catch (error) {
             throw new Error("update has been failed")   
         }
